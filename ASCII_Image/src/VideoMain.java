@@ -3,6 +3,8 @@ import processing.core.PFont;
 import processing.core.PImage;
 import processing.video.Movie;
 
+import java.io.File;
+
 
 public class VideoMain extends PApplet {
 
@@ -12,6 +14,8 @@ public class VideoMain extends PApplet {
     ASCIIDrawer drawer;
     ImageProcessor preliminar;
     Movie movie;
+
+    PImage[] imgs;
 
 
     public void settings() {
@@ -26,7 +30,7 @@ public class VideoMain extends PApplet {
         ancizar = createFont("AncizarSans-Regular_02042016.otf", 32);
 
         drawer = new ASCIIDrawer(this);
-        preliminar = new ImageProcessor(this);
+        preliminar = new ImageProcessor(this, drawer);
 
         test = loadImage("data/DIO.png");
 
@@ -34,7 +38,11 @@ public class VideoMain extends PApplet {
         movie = new Movie(this, "breakdown.mp4");
         movie.loop();
 
-
+        File[] files = listFiles(sketchPath("data/photos"));
+        imgs = new PImage[files.length];
+        for (int i = 0; i< files.length; i++){
+            imgs[i] = loadImage(files[i].toString());
+        }
 
     }
 
@@ -52,7 +60,7 @@ public class VideoMain extends PApplet {
 
         textFont(ancizar, 50);
         stroke(255);
-        text("Original", (int) (0.02*w), 0, (int)  (w*0.45), (int) (h*0.075));
+        text("Original + Filtros", (int) (0.02*w), 0, (int)  (w*0.45), (int) (h*0.075));
         text("ASCII", (int) (0.52*w), 0, (int)  (w*0.95), (int) (h*0.075));
 
 
@@ -62,10 +70,9 @@ public class VideoMain extends PApplet {
         rect((float) 0.024 *w,(float) 0.0749 * h, (float) 0.452 * w, (float) 0.552 * h );
         rect((float) 0.524 *w,(float) 0.0749 * h, (float) 0.452 * w, (float) 0.552 * h );
 
-        preliminar.load(movie);
-        PImage img = preliminar.process( (int)(0.45 * w), (int) (0.55 * h));
+        preliminar.load(movie, (int)(0.45 * w), (int) (0.55 * h));
+        PImage img = preliminar.getProcessed();
         image(   img                  , (float) 0.025 * w,  (float) 0.075 * h, (float) 0.45 * w, (float) 0.55 * h );
-
 
         //image( drawer.asciiImage(), (float) 0.525 * w,  (float) 0.075 * h, (float) 0.45 * w, (float) 0.55 * h );
 

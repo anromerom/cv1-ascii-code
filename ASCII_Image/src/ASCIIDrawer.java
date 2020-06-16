@@ -4,13 +4,19 @@ import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.data.IntDict;
 
+import javax.lang.model.element.UnknownElementException;
+import java.rmi.UnexpectedException;
+
 public class ASCIIDrawer {
     PApplet p;
     static final int res = 50;
     String[] ordered;
     PFont mono;
     boolean col = false;
-    boolean luma = true;
+    boolean luma = false;
+    boolean bw = false;
+
+
     IntDict count;
     int N;
     PImage ascii, img;
@@ -192,5 +198,27 @@ public class ASCIIDrawer {
             Nchanged = false;
         }
         return ascii;
+    }
+
+    public void updateParam(int i) {
+
+        switch (i) {
+            case 1: this.luma = !this.luma; break;
+            case 4: this.col = !this.col; break;
+            case 6: this.bw = !this.bw; break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + i);
+        }
+        createAsciiImage(img);
+    }
+
+    public boolean getParam(int i) {
+        switch (i) {
+            case 1: return this.luma;
+            case 4: return this.col;
+            case 6: return this.bw;
+            default:
+                throw new IllegalStateException("Unexpected value: " + i);
+        }
     }
 }

@@ -4,67 +4,47 @@ import processing.core.PImage;
 
 public class ImageProcessor {
 
+    private final ASCIIDrawer drawer;
     PApplet p;
     PImage raw;
-    boolean border = false;
-    boolean sharpen = true;
-    boolean invert = true;
+    boolean convolute = false;
+    boolean threshold = false;
+    boolean invert = false;
     int[] hist;
+    PImage processed;
+    private int w;
+    private int h;
 
-    public ImageProcessor(PApplet parent) {
+    public ImageProcessor(PApplet parent, ASCIIDrawer drawer) {
         this.p = parent;
-
+        this.drawer = drawer;
     }
 
 
-    public void load (PImage img){
+    public void load (PImage img, int w, int h){
         this.raw = img;
         constructHistogram();
-
-    }
-
-    void updateType(String s){
-
-        switch (s){
-            case "border":
-
-                border = true;
-                invert = false;
-                sharpen = false;
-                break;
-
-            case "invert":
-
-                border = false;
-                invert = true;
-                sharpen = false;
-                break;
-
-            case "sharpen":
-
-                border = false;
-                invert = false;
-                sharpen = true;
-                break;
-
-        }
-
-
+        this.w = w;
+        this.h = h;
+        process();
     }
 
 
 
-    public PImage process(int w, int h){
+    public PImage getProcessed(){
+        return processed;
+    }
+    private void process(){
 
         //PImage filtered = adjusted(raw,w,h);
         PImage filtered = raw.copy();
 
-        if(sharpen) {
+        if(threshold) {
             filtered.filter(p.THRESHOLD, (float) 0.75);
         }
 
         if(invert) filtered.filter(p.INVERT);
-        if(border){
+        if(convolute){
             float[][] matrix = { {  -1, -1,  -1 },
                                  { -1,  9, -1 },
                                  {  -1, -1,  -1 } };
@@ -75,9 +55,8 @@ public class ImageProcessor {
 
 
 
-        return adjusted(filtered, w, h);
-
-
+        processed = adjusted(filtered, w, h);
+        drawer.createAsciiImage(processed);
 
     }
 
@@ -139,7 +118,7 @@ public class ImageProcessor {
 
 
 
-    PImage adjusted(PImage img, double w, double h){
+    public PImage adjusted(PImage img, double w, double h){
 
         float sw, sh;
 
@@ -197,7 +176,30 @@ public class ImageProcessor {
 
             p.rect(xo + i* (w/ raw.width), yo + h, xo + (i+1) *( w/ raw.width), y);
         }
+    }
+
+    public void updateParam(int i) {
+
+        switch (i) {
+            case 2: this.convolute = !this.convolute; break;
+            case 3: this.threshold = !this.threshold; break;
+            case 5: this.invert = !this.invert; break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + i);
+        }
+        process();
 
     }
 
+    public boolean getParam(int i) {
+
+
+        switch (i) {
+            case 2: return this.convolute;
+            case 3: return this.threshold;
+            case 5: return this.invert;
+            default:
+                throw new IllegalStateException("Unexpected value: " + i);
+        }
+    }
 }

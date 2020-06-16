@@ -3,6 +3,8 @@ import processing.core.PFont;
 import processing.core.PImage;
 import processing.event.MouseEvent;
 
+import java.io.File;
+
 
 public class ImageMain extends PApplet {
 
@@ -11,13 +13,18 @@ public class ImageMain extends PApplet {
     PFont  ancizar;
     ASCIIDrawer drawer;
     ImageProcessor preliminar;
+    File[] files;
+
+    PImage[] imgs;
+
+    int curImage = 0;
 
 
 
 
     public void settings() {
 
-        size(1600,900);
+        size(1600,800);
     }
 
 
@@ -27,14 +34,36 @@ public class ImageMain extends PApplet {
         ancizar = createFont("AncizarSans-Regular_02042016.otf", 32);
 
         drawer = new ASCIIDrawer(this);
-        preliminar = new ImageProcessor(this);
+        preliminar = new ImageProcessor(this, drawer);
 
         test = loadImage("data/DIO.png");
-        preliminar.load(test);
-        img = preliminar.process( (int)(0.45 * width), (int) (0.55 * height));
+        files = listFiles(sketchPath("data/image"));
+
+        imgs = new PImage[files.length];
+        for (int i = 0; i< files.length; i++){
+            imgs[i] = loadImage(files[i].toString());
+        }
+
+        preliminar.load(imgs[0],  (int)(0.45 * width), (int) (0.55 * height));
+        img = preliminar.getProcessed();
         drawer.createAsciiImage(img);
+
+
     }
 
+
+    public void keyPressed(){
+
+        if( key == ' '){
+
+            curImage = (curImage + 1) % files.length;
+            preliminar.load(imgs[curImage],  (int)(0.45 * width), (int) (0.55 * height));
+            print("Giorno giovanna");
+
+        }
+
+
+    }
 
 
 
@@ -53,8 +82,11 @@ public class ImageMain extends PApplet {
         fill(255);
 
         rectMode(CORNERS);
+
         text("Original", (int) (0.02*w), 0, (int)  (w*0.45), (int) (h*0.075));
         text("ASCII", (int) (0.52*w), 0, (int)  (w*0.95), (int) (h*0.075));
+
+        
 
         fill(0);
         noStroke();
@@ -66,7 +98,7 @@ public class ImageMain extends PApplet {
 
 
 
-        image(   img                  ,  0.025f * w,   0.075f * h,  0.45f * w, 0.55f * h );
+        image(   preliminar.getProcessed() ,  0.025f * w,   0.075f * h,  0.45f * w, 0.55f * h );
         image( drawer.asciiImage(),  0.525f * w,   0.075f * h,  0.45f * w,  0.55f * h );
 
         preliminar.drawHistogram(0.25f*w,0.65f*h,  0.5f * w, 0.35f* h);
@@ -84,15 +116,17 @@ public class ImageMain extends PApplet {
     public void drawButtons(){
         int w =  width, h = height;
         rectMode(CORNER);
-        fill(68, 146, 212); rect(0.025f * w ,0.83f* h, w*0.0625f, h*0.0625f);
-        fill(68, 146, 212); rect(0.095f * w ,0.83f* h, w*0.0625f, h*0.0625f);
-        fill(68, 146, 212); rect(0.165f * w ,0.83f* h, w*0.0625f, h*0.0625f);
+        textFont(ancizar, 18);
 
-        fill(68, 146, 212); rect(0.025f * w ,0.92f* h, w*0.0625f, h*0.0625f);
-        fill(68, 146, 212); rect(0.095f * w ,0.92f* h, w*0.0625f, h*0.0625f);
-        fill(68, 146, 212); rect(0.165f * w ,0.92f* h, w*0.0625f, h*0.0625f);
+        boolean[] st = btnStates();
+        fill( st[0] ? color(151, 194, 231) : color(68, 146, 212)); rect(0.025f * w ,0.83f* h, w*0.0625f, h*0.0625f); fill(33); text("Luma",0.025f * w ,0.83f* h, w*0.0625f, h*0.0625f);
+        fill( st[1] ? color(151, 194, 231) : color(68, 146, 212)); rect(0.095f * w ,0.83f* h, w*0.0625f, h*0.0625f); fill(33); text("Threshold",0.095f * w ,0.83f* h, w*0.0625f, h*0.0625f);
+        fill( st[2] ? color(151, 194, 231) : color(68, 146, 212));rect(0.165f * w ,0.83f* h, w*0.0625f, h*0.0625f); fill(33); text("Inverse", 0.165f * w ,0.83f* h, w*0.0625f, h*0.0625f);
+        fill( st[3] ? color(151, 194, 231) : color(68, 146, 212)); rect(0.025f * w ,0.92f* h, w*0.0625f, h*0.0625f); fill(33); text("Convolution",0.025f * w ,0.92f* h, w*0.0625f, h*0.0625f);
+        fill( st[4] ? color(151, 194, 231) : color(68, 146, 212)); rect(0.095f * w ,0.92f* h, w*0.0625f, h*0.0625f); fill(33); text("Color",0.095f * w ,0.92f* h, w*0.0625f, h*0.0625f);
+        fill( st[5] ? color(151, 194, 231) : color(68, 146, 212));rect(0.165f * w ,0.92f* h, w*0.0625f, h*0.0625f); fill(33); text("Black & White",0.165f * w ,0.92f* h, w*0.0625f, h*0.0625f);
 
-        fill(255, 100);
+        fill(255, 70);
         switch (checkButton(mouseX, mouseY)) {
             case 1 -> rect(0.025f * w, 0.83f * h, w * 0.0625f, h * 0.0625f);
             case 3 -> rect(0.095f * w, 0.83f * h, w * 0.0625f, h * 0.0625f);
@@ -102,7 +136,21 @@ public class ImageMain extends PApplet {
             case 6 -> rect(0.165f * w, 0.92f * h, w * 0.0625f, h * 0.0625f);
         }
 
+    }
 
+
+    boolean[] btnStates() {
+
+
+
+        return new boolean[]{
+                drawer.getParam(1),
+                preliminar.getParam(3),
+                preliminar.getParam(5),
+                preliminar.getParam(2),
+                drawer.getParam(4),
+                drawer.getParam(6)
+                };
     }
 
 
@@ -158,15 +206,16 @@ public class ImageMain extends PApplet {
 
         print("Mouse");
 
-
-        /*switch (checkButton(mouseX, mouseY)) {
-            case 1 -> rect(0.025f * w, 0.85f * h, w * 0.0625f, h * 0.0625f);
-            case 3 -> rect(0.095f * w, 0.85f * h, w * 0.0625f, h * 0.0625f);
-            case 5 -> rect(0.165f * w, 0.85f * h, w * 0.0625f, h * 0.0625f);
-            case 2 -> rect(0.025f * w, 0.92f * h, w * 0.0625f, h * 0.0625f);
-            case 4 -> rect(0.095f * w, 0.92f * h, w * 0.0625f, h * 0.0625f);
-            case 6 -> rect(0.165f * w, 0.92f * h, w * 0.0625f, h * 0.0625f);
-        }*/
+        print(checkButton(mouseX, mouseY));
+        switch (checkButton(mouseX, mouseY)) {
+            case 1 -> drawer.updateParam(1); // Luma
+            case 3 -> preliminar.updateParam(3); // Threshold
+            case 5 -> preliminar.updateParam(5); // Inverse
+            case 2 -> preliminar.updateParam(2); // Convolution
+            case 4 -> drawer.updateParam(4); // Color
+            case 6 -> drawer.updateParam(6); // Black and White
+            //
+        }
     }
 
     static public void main(String[] passedArgs) {
