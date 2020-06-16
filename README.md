@@ -44,4 +44,23 @@ El proceso de transformar una imagen consta de tres partes. Primero, a cada car�
 El proyecto cuenta con cuatro ejecutables, dos para el procesamiento de imágenes y dos para el procesamiento de video. Un ejecutable de imagen y otro de video hace los procesamientos de forma clásica, mientras que los otros dos ejecutables hacen procesamiento con ayuda de hardware.
 
 ## Resultados 
+### Escala de grises
+
+![image info](./imgResult/bob1.JPG)     ![image info](./imgResult/Bob2.png)
+### Inversión de colores
+![image info](./imgResult/Base.JPG)
+
+![image info](./imgResult/BaseInv.JPG)
+
+### ASCII
+![image info](./imgResult/hisoka.JPG)
+
+![image info](./imgResult/Ascii 1.JPG)
+
+![image info](./imgResult/ascii2.JPG)
+
+![image info](./imgResult/ascii3.JPG)
+
+
+
 ## Conlusiones
