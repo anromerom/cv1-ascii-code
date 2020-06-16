@@ -53,12 +53,13 @@ El proyecto cuenta con cuatro ejecutables, dos para el procesamiento de imágene
 ![image info](./imgResult/BaseInv.JPG)
 
 ### ASCII
+#### Original
 ![image info](./imgResult/hisoka.JPG)
-
+#### Ascii puro
 ![image info](./imgResult/Ascii1.JPG)
-
+#### Ascii con luma
 ![image info](./imgResult/ascii2.JPG)
-
+#### Ascii con color
 ![image info](./imgResult/ascii3.JPG)
 
 
