@@ -45,5 +45,5 @@ El proyecto cuenta con cuatro ejecutables, dos para el procesamiento de imágene
 
 ## Resultados 
 
-![image info](./imgResult/Bob2.png)
+![image info](./imgResult/bob1.png) ![image info](./imgResult/Bob2.png)
 ## Conlusiones
