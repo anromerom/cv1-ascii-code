@@ -46,9 +46,7 @@ El proyecto cuenta con cuatro ejecutables, dos para el procesamiento de imágene
 ## Resultados 
 ### Escala de grises
 
-![image info](./imgResult/bob1.png) 
-
-![image info](./imgResult/Bob2.png)
+![image info](./imgResult/bob1.JPG)     ![image info](./imgResult/Bob2.png)
 ### Inversión de colores
 ![image info](./imgResult/Base.JPG)
 
