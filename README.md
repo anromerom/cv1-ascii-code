@@ -55,7 +55,7 @@ El proyecto cuenta con cuatro ejecutables, dos para el procesamiento de imágene
 ### ASCII
 ![image info](./imgResult/hisoka.JPG)
 
-![image info](./imgResult/Ascii 1.JPG)
+![image info](./imgResult/Ascii1.JPG)
 
 ![image info](./imgResult/ascii2.JPG)
 
