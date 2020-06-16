@@ -12,6 +12,10 @@ public class ASCIIDrawer {
     String[] ordered;
     PFont mono;
     boolean col = false;
+    boolean luma = true;
+    IntDict count;
+
+
 
     public ASCIIDrawer(PApplet parent) {
         this.p = parent;
@@ -26,7 +30,7 @@ public class ASCIIDrawer {
         }
 
         PApplet.printArray(char_list);
-        IntDict count = new IntDict();
+        count = new IntDict();
         p.loadPixels();
         p.textAlign(p.CENTER, p.CENTER); p.textFont(mono); p.textSize((float)(res*0.65));
 
@@ -60,51 +64,28 @@ public class ASCIIDrawer {
         ordered  = count.keyArray();
     }
 
-    PImage adjusted(PImage img, int w, int h){
 
-        int sw, sh;
 
-        if (img.width / img.height > w / h)
-        {
-            sw = w;
-            sh = sw * img.height / img.width;
-        }
-        else
-        {
-            sh = h;
-            sw = sh * img.width / img.height;
-        }
-
-        PApplet.println(sw, sh);
-        PGraphics pg = p.createGraphics(w, h);
-        pg.beginDraw();
-
-        pg.imageMode(p.CENTER);
-        pg.image(img, (float) w / 2, (float) h / 2, sw, sh);
-        pg.endDraw();
-
-        return pg.get(0,0 ,w, h);
-    }
-
-    PImage asciiImage(PImage img_o, int w, int h){
+    PImage asciiImage(PImage img){
         //movie.volume(0.001);
-        int N = 100;
+        int N = 125;
 
-        PImage img = adjusted(img_o, w, h);
         //PImage img = img_o;
-        PApplet.print(img.width  == w);
-        PApplet.print(img.height == h);
+
+        int w = img.width;
+        int h = img.height;
 
         PGraphics pg = p.createGraphics(w, h);
         pg.beginDraw();
 
-        int M =  N *p.height / p.width;
+        int M =  N *h / w;
 
         pg.image(img, 0,0, N, M);
 
         PImage pix = pg.get(0,0,N,M);
         pg.background(col? 255:0);
-        pg.textSize((int) (p.width * 1.2 / N));
+
+        pg.textSize((int) (w * 1.2 / N));
 
         for(int j = 0; j<M; j++){
             for(int i = 0; i<N; i++){
@@ -113,7 +94,8 @@ public class ASCIIDrawer {
                 pg.fill(255);
 
                 pg.textAlign(p.LEFT, p.TOP);
-                pg.text(ordered[PApplet.floor(PApplet.map(p.brightness(pix.pixels[i+j*pix.width]) ,0,255,col? ordered.length -1:0, col? 0:ordered.length -1))]
+
+                pg.text( mapCharlie(pix.pixels[i+j*pix.width])
                         ,(float) i * w / N , (float) j * h / M);
 
             }
@@ -122,4 +104,75 @@ public class ASCIIDrawer {
         return pg.get(0,0,w,h);
 
     }
+
+    @Deprecated
+    private String mapCharlieOld(int x){
+        float value;
+        if (luma){
+
+            float r = p.red(x);
+            float g = p.green(x);
+            float b = p.blue(x);
+
+            value = (float) (0.2126*r + 0.7152*g + 0.0722*b);
+
+        }
+        else value = p.brightness(x);
+
+        return ordered[PApplet.floor(PApplet.map(value,0,255,col? ordered.length -1:0, col? 0:ordered.length -1) )];
+
+    }
+
+    private String mapCharlie(int x){
+        float value;
+        if (luma){
+
+            float r = p.red(x);
+            float g = p.green(x);
+            float b = p.blue(x);
+
+            value = (float) (0.2126*r + 0.7152*g + 0.0722*b);
+
+        }
+        else value = p.brightness(x);
+
+        String index = ordered[nearest(value)];
+
+
+        return ordered[nearest(value)];
+
+    }
+
+    //Tomado de https://stackoverflow.com/questions/30245166/find-the-nearest-closest-value-in-a-sorted-list
+    public int nearest(float value) {
+        count.sortValues();
+        int[] a = count.valueArray();
+
+        if(value < a[0]) {
+            return 0;
+        }
+        if(value > a[a.length-1]) {
+            return a.length-1;
+        }
+
+        int lo = 0;
+        int hi = a.length - 1;
+
+        while (lo <= hi) {
+            int mid = (hi + lo) / 2;
+
+            if (value < a[mid]) {
+                hi = mid - 1;
+            } else if (value > a[mid]) {
+                lo = mid + 1;
+            } else {
+                return mid;
+            }
+        }
+        // lo == hi + 1
+        return (a[lo] - value) < (value - a[hi]) ? lo : hi;
+    }
+
+
+
 }
