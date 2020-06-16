@@ -12,6 +12,7 @@ En este taller se manipulan las imágenes mediante varias técnicas para obtener
 -	Imagen en escala de grises
 -	Imagen con efecto de difuminado
 -	Imagen en formada con caracteres ASCII
+
 Adicionalmente, la transformación de ASCII es aplicable a videos. Por otro lado, en el cuadro donde se muestra el resultado, se dibuja un histograma que representa la luminosidad de la imagen original.
 
 ## Motivación
