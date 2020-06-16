@@ -72,7 +72,7 @@ public class VideoMain extends PApplet {
 
         preliminar.load(movie, (int)(0.45 * w), (int) (0.55 * h));
         PImage img = preliminar.getProcessed();
-        image(   img                  , (float) 0.025 * w,  (float) 0.075 * h, (float) 0.45 * w, (float) 0.55 * h );
+        image( img, (float) 0.025 * w,  (float) 0.075 * h, (float) 0.45 * w, (float) 0.55 * h );
 
         //image( drawer.asciiImage(), (float) 0.525 * w,  (float) 0.075 * h, (float) 0.45 * w, (float) 0.55 * h );
 

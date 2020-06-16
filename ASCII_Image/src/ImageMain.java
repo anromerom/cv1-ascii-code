@@ -36,7 +36,6 @@ public class ImageMain extends PApplet {
         drawer = new ASCIIDrawer(this);
         preliminar = new ImageProcessor(this, drawer);
 
-        test = loadImage("data/DIO.png");
         files = listFiles(sketchPath("data/image"));
 
         imgs = new PImage[files.length];
@@ -58,7 +57,6 @@ public class ImageMain extends PApplet {
 
             curImage = (curImage + 1) % files.length;
             preliminar.load(imgs[curImage],  (int)(0.45 * width), (int) (0.55 * height));
-            print("Giorno giovanna");
 
         }
 
@@ -86,7 +84,7 @@ public class ImageMain extends PApplet {
         text("Original", (int) (0.02*w), 0, (int)  (w*0.45), (int) (h*0.075));
         text("ASCII", (int) (0.52*w), 0, (int)  (w*0.95), (int) (h*0.075));
 
-        
+
 
         fill(0);
         noStroke();
@@ -104,9 +102,7 @@ public class ImageMain extends PApplet {
         preliminar.drawHistogram(0.25f*w,0.65f*h,  0.5f * w, 0.35f* h);
 
         fill(255,0,0);
-
         drawButtons();
-
         text(frameRate, mouseX, mouseY);
 
 
@@ -119,6 +115,7 @@ public class ImageMain extends PApplet {
         textFont(ancizar, 18);
 
         boolean[] st = btnStates();
+
         fill( st[0] ? color(151, 194, 231) : color(68, 146, 212)); rect(0.025f * w ,0.83f* h, w*0.0625f, h*0.0625f); fill(33); text("Luma",0.025f * w ,0.83f* h, w*0.0625f, h*0.0625f);
         fill( st[1] ? color(151, 194, 231) : color(68, 146, 212)); rect(0.095f * w ,0.83f* h, w*0.0625f, h*0.0625f); fill(33); text("Threshold",0.095f * w ,0.83f* h, w*0.0625f, h*0.0625f);
         fill( st[2] ? color(151, 194, 231) : color(68, 146, 212));rect(0.165f * w ,0.83f* h, w*0.0625f, h*0.0625f); fill(33); text("Inverse", 0.165f * w ,0.83f* h, w*0.0625f, h*0.0625f);
@@ -194,7 +191,6 @@ public class ImageMain extends PApplet {
     public void mouseWheel(MouseEvent event) {
         super.mouseWheel(event);
 
-        print("Wheel");
         drawer.updateN(event.getCount());
 
 
@@ -203,8 +199,6 @@ public class ImageMain extends PApplet {
     @Override
     public void mousePressed() {
         super.mousePressed();
-
-        print("Mouse");
 
         print(checkButton(mouseX, mouseY));
         switch (checkButton(mouseX, mouseY)) {

@@ -92,20 +92,18 @@ public class ASCIIDrawer {
         pg.image(img, 0,0, N, M);
 
         PImage pix = pg.get(0,0,N,M);
-        pg.background(col? 255:0);
+        pg.background(bw? 255:0);
 
         pg.textSize((int) (w * 1.2 / N));
 
         for(int j = 0; j<M; j++){
             for(int i = 0; i<N; i++){
-
-
-                pg.fill(255);
+                if (col) pg.fill(pix.pixels[i+j*pix.width]);
+                else    pg.fill( bw ? 0:255);
 
                 pg.textAlign(p.LEFT, p.TOP);
 
-                pg.text( mapCharlie(pix.pixels[i+j*pix.width])
-                        ,(float) i * w / N , (float) j * h / M);
+                pg.text( mapCharlie(pix.pixels[i+j*pix.width]),(float) i * w / N , (float) j * h / M);
 
             }
         }
