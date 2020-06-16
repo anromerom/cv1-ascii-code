@@ -61,6 +61,8 @@ El proyecto cuenta con cuatro ejecutables, dos para el procesamiento de imágene
 ![image info](./imgResult/ascii2.JPG)
 #### Ascii con color
 ![image info](./imgResult/ascii3.JPG)
+### Detección de bordes
+![image info](./imgResult/unknown.png)
 
 
 
