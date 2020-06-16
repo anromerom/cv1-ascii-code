@@ -1,5 +1,3 @@
-package com.supermegadinamita;
-
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
@@ -33,7 +31,7 @@ public class VideoMain extends PApplet {
         test = loadImage("data/DIO.png");
 
 
-        movie = new Movie(this, "data/breakdown.mp4");
+        movie = new Movie(this, "breakdown.mp4");
         movie.loop();
 
 
@@ -58,7 +56,6 @@ public class VideoMain extends PApplet {
         text("ASCII", (int) (0.52*w), 0, (int)  (w*0.95), (int) (h*0.075));
 
 
-
         fill(0);
         noStroke();
         rectMode(CORNER);
@@ -67,12 +64,12 @@ public class VideoMain extends PApplet {
 
         preliminar.load(movie);
         PImage img = preliminar.process( (int)(0.45 * w), (int) (0.55 * h));
-
         image(   img                  , (float) 0.025 * w,  (float) 0.075 * h, (float) 0.45 * w, (float) 0.55 * h );
-        image( drawer.asciiImage(img), (float) 0.525 * w,  (float) 0.075 * h, (float) 0.45 * w, (float) 0.55 * h );
 
-        preliminar.drawHistogram((float) 0.25*w,(float) 0.65*h, (float)  0.5 * w, (float) 0.35* h);
 
+        //image( drawer.asciiImage(), (float) 0.525 * w,  (float) 0.075 * h, (float) 0.45 * w, (float) 0.55 * h );
+
+        //preliminar.drawHistogram((float) 0.25*w,(float) 0.65*h, (float)  0.5 * w, (float) 0.35* h);
 
 
 
@@ -80,8 +77,10 @@ public class VideoMain extends PApplet {
 
 
 
+
+
     static public void main(String[] passedArgs) {
-        String[] appletArgs = new String[] { "com.supermegadinamita.VideoMain" };
+        String[] appletArgs = new String[] { "VideoMain" };
         if (passedArgs != null) {
             PApplet.main(concat(appletArgs, passedArgs));
         } else {

@@ -1,7 +1,4 @@
-package com.supermegadinamita;
-
 import processing.core.PApplet;
-import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
 
@@ -12,15 +9,17 @@ public class ImageProcessor {
     boolean border = false;
     boolean sharpen = true;
     boolean invert = true;
-
+    int[] hist;
 
     public ImageProcessor(PApplet parent) {
         this.p = parent;
+
     }
 
 
     public void load (PImage img){
         this.raw = img;
+        constructHistogram();
 
     }
 
@@ -166,18 +165,24 @@ public class ImageProcessor {
 
     }
 
-    public void drawHistogram(float xo, float yo, float w, float h) {
 
-        int[] hist = new int[256];
-
-        // Calculate the histogram
-
+    public void constructHistogram(){
+        hist = new int[256];
         for (int i = 0; i < raw.width; i++) {
             for (int j = 0; j < raw.height; j++) {
                 int bright = (int)(p.brightness(raw.get(i, j)));
                 hist[bright]++;
             }
         }
+    }
+
+    public void drawHistogram(float xo, float yo, float w, float h) {
+
+
+        // Calculate the histogram
+
+
+        
         int histMax = PApplet.max(hist);
         p.rectMode(p.CORNERS);
         p.noStroke();

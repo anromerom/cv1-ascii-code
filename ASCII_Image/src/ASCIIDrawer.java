@@ -1,5 +1,3 @@
-package com.supermegadinamita;
-
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PGraphics;
@@ -14,13 +12,17 @@ public class ASCIIDrawer {
     boolean col = false;
     boolean luma = true;
     IntDict count;
-
+    int N;
+    PImage ascii, img;
+    private boolean Nchanged = false;
 
 
     public ASCIIDrawer(PApplet parent) {
         this.p = parent;
         mono = p.createFont("Courier New Negrita", (float) p.width / 50);
         orderChars();
+        N = 125;
+
     }
 
     public void orderChars(){
@@ -29,7 +31,7 @@ public class ASCIIDrawer {
             char_list[i - 32] = (char)i;
         }
 
-        PApplet.printArray(char_list);
+
         count = new IntDict();
         p.loadPixels();
         p.textAlign(p.CENTER, p.CENTER); p.textFont(mono); p.textSize((float)(res*0.65));
@@ -66,12 +68,13 @@ public class ASCIIDrawer {
 
 
 
-    PImage asciiImage(PImage img){
+
+    void createAsciiImage(PImage img){
         //movie.volume(0.001);
-        int N = 125;
+
 
         //PImage img = img_o;
-
+        this.img = img;
         int w = img.width;
         int h = img.height;
 
@@ -101,7 +104,7 @@ public class ASCIIDrawer {
             }
         }
         pg.endDraw();
-        return pg.get(0,0,w,h);
+        ascii =  pg.get(0,0,w,h);
 
     }
 
@@ -174,5 +177,20 @@ public class ASCIIDrawer {
     }
 
 
+    public void updateN(int count) {
 
+        N+= count;
+        N = N <= 10 ? 10 : (Math.min(N, 200));
+        Nchanged = true;
+
+    }
+
+    public PImage asciiImage() {
+
+        if(Nchanged) {
+            createAsciiImage(img);
+            Nchanged = false;
+        }
+        return ascii;
+    }
 }
