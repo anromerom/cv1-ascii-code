@@ -240,6 +240,8 @@ public class ImageMain extends PApplet {
         pg.image( im, 0,0 );
         pg.endDraw();
 
+
+
         pg.save("ascii-output.png");
 
     }
