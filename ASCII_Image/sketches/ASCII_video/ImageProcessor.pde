@@ -23,7 +23,7 @@ class ImageProcessor {
 
     public void load (PImage img, int w, int h){
         this.raw = img;
-        constructHistogram();
+        //constructHistogram();
         this.w = w;
         this.h = h;
         process();

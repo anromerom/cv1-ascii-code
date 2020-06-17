@@ -4,7 +4,7 @@ import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.event.MouseEvent;
 import java.io.File;
-
+import processing.video.*;
 
 
 PImage download, img;
@@ -12,12 +12,12 @@ PFont  ancizar;
 ASCIIDrawer drawer;
 ImageProcessor preliminar;
 File[] files;
-
-PImage[] imgs;
+String[] paths;
+boolean pause;
 
 int curImage = 0;
 
-
+Movie movie;
 
 
 public void settings() {
@@ -34,18 +34,31 @@ public void setup() {
     drawer = new ASCIIDrawer(this);
     preliminar = new ImageProcessor(this, drawer);
 
-    files = listFiles(sketchPath("data/image"));
+    files = listFiles(sketchPath("data/video"));
 
-    imgs = new PImage[files.length];
-    for (int i = 0; i< files.length; i++){
-        imgs[i] = loadImage(files[i].toString());
+    //imgs = new PImage[files.length];
+    
+    paths = new String[files.length];
+    
+    for (int i = 0; i< paths.length; i++){
+       paths[i] = files[i].toString();    
     }
+    printArray(paths);
+    
+    movie = new Movie(this, paths[0]);
+    //preliminar.load(movie,  (int)(0.45 * width), (int) (0.55 * height));
+    //img = preliminar.getProcessed();
+    //drawer.createAsciiImage(img);
+    
+    movie.read();
+    movie.loadPixels();
+    preliminar.load(movie.get(),  (int)(0.45 * width), (int) (0.55 * height));  
+    drawer.createAsciiImage(preliminar.getProcessed());
 
-    preliminar.load(imgs[0],  (int)(0.45 * width), (int) (0.55 * height));
-    img = preliminar.getProcessed();
-    drawer.createAsciiImage(img);
     download = loadImage("data/download.png");
-
+    movie.loop();
+    movie.volume(0.01);
+    pause = true; 
 
 }
 
@@ -55,9 +68,23 @@ public void keyPressed(){
     if( key == ' '){
 
         curImage = (curImage + 1) % files.length;
-        preliminar.load(imgs[curImage],  (int)(0.45 * width), (int) (0.55 * height));
+        println(paths[curImage]);
+        
+        movie = new Movie(this, paths[curImage]);
+ 
+            movie.read();
+          movie.loadPixels();
+          preliminar.load(movie.get(),  (int)(0.45 * width), (int) (0.55 * height));  
+          drawer.createAsciiImage(preliminar.getProcessed());
+          movie.loop();
+          movie.volume(0.01);
+          pause = true; 
 
     }
+    
+      if ( key == 'p'){
+          pause = !pause;
+      }
 
 
 }
@@ -65,7 +92,14 @@ public void keyPressed(){
 
 
 public void draw() {
-
+  
+  if (movie.available() && !pause) {
+    movie.read();
+    movie.loadPixels();
+    preliminar.load(movie.get(),  (int)(0.45 * width), (int) (0.55 * height));
+  
+    drawer.createAsciiImage(preliminar.getProcessed());
+    }
     float w = width;
     float h = height;
     //asciiImage(test, 500, 500);
@@ -94,16 +128,26 @@ public void draw() {
 
 
 
-    image(   preliminar.getProcessed() ,  0.025f * w,   0.075f * h,  0.45f * w, 0.55f * h );
-    image( drawer.asciiImage(),  0.525f * w,   0.075f * h,  0.45f * w,  0.55f * h );
+    image(preliminar.getProcessed() ,  0.025f * w,   0.075f * h,  0.45f * w, 0.55f * h );
+    image(drawer.asciiImage(),  0.525f * w,   0.075f * h,  0.45f * w,  0.55f * h );
 
-    preliminar.drawHistogram(0.25f*w,0.65f*h,  0.5f * w, 0.35f* h);
-
+    //preliminar.drawHistogram(0.25f*w,0.65f*h,  0.5f * w, 0.35f* h);
+    
+    
+    
+    rect(0.65f*w,0.75f*h,  0.15f * w, 0.23f* h);
+    
+    fill(#b6eb7a);
+    textFont(ancizar, 50);
+    text(String.format("%2.2f", frameRate), 0.65f*w,0.75f*h,  0.15f * w, 0.23f* h);
+    textFont(ancizar, 60);
+    text("Frame rate", 0.45f*w, 0.75f*h,  0.20f * w, 0.23f* h);
+    
     fill(255,0,0);
     drawButtons();
-    text(frameRate, mouseX, mouseY);
+    
 
-
+  
 }
 
 
@@ -210,20 +254,20 @@ public void mouseWheel(MouseEvent event) {
 
 }
 
-@Override
+
+
 public void mousePressed() {
-    super.mousePressed();
+    
 
     println(checkButton(mouseX, mouseY));
     switch (checkButton(mouseX, mouseY)) {
-        case 1 : drawer.updateParam(1); break; // Luma
+        case 1 : drawer.updateParam(1); break;// Luma
         case 3 : preliminar.updateParam(3); break; // Threshold
         case 5 : preliminar.updateParam(5); break;// Inverse
-        case 2 : preliminar.updateParam(2); break; // Convolution
+        case 2 : preliminar.updateParam(2); break;// Convolution
         case 4 : drawer.updateParam(4); break;// Color
-        case 6 : drawer.updateParam(6); break; // Black and White
-        case 7 : download();
-        //
+        case 6 : drawer.updateParam(6); break;// Black and White
+        case 7 : download(); break;    //
     }
 }
 
