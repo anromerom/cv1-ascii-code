@@ -19,12 +19,13 @@ public class ImageMain extends PApplet {
     PImage[] imgs;
 
     int curImage = 0;
-
+    static String title = "Original";
 
     public void settings() {
 
         size(1600, 800);
     }
+
 
 
     public void setup() {
@@ -87,7 +88,7 @@ public class ImageMain extends PApplet {
 
         rectMode(CORNERS);
 
-        text("Original", (int) (0.02 * w), 0, (int) (w * 0.45), (int) (h * 0.075));
+        text(title, (int) (0.02 * w), 0, (int) (w * 0.45), (int) (h * 0.075));
         text("ASCII", (int) (0.52 * w), 0, (int) (w * 0.95), (int) (h * 0.075));
 
 
