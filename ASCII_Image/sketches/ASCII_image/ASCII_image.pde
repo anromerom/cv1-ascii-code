@@ -58,7 +58,14 @@ public void keyPressed(){
         preliminar.load(imgs[curImage],  (int)(0.45 * width), (int) (0.55 * height));
 
     }
-
+    
+    if (key == CODED) {
+      if (keyCode == UP) {
+          preliminar.upFilter();
+      } else if (keyCode == DOWN) {
+          preliminar.downFilter();
+      }
+  }
 
 }
 
