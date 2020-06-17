@@ -12,10 +12,11 @@ public class ImageProcessor {
     boolean invert = false;
     boolean luma = false;
     boolean gray = false;
+    boolean blur = false;
     int[] hist;
     PImage processed;
     private int currentIndexFilter = 0;
-    private int numFilters = 4;
+    private int numFilters = 6;
     private int w;
     private int h;
 
@@ -55,8 +56,14 @@ public class ImageProcessor {
         if (invert) filtered = inverse(filtered);
         if (convolute) {
             float[][] matrix = {{-1, -1, -1},
-                    {-1, 9, -1},
+                    {-1, 8, -1},
                     {-1, -1, -1}};
+            filtered = convolute(filtered, matrix);
+        }
+        if (blur) {
+            float[][] matrix = {{(1.0F / 3), (1.0F / 3), (1.0F / 3)},
+                    {(1.0F / 3), (1.0F / 3), (1.0F / 3)},
+                    {(1.0F / 3), (1.0F / 3), (1.0F / 3)}};
             filtered = convolute(filtered, matrix);
         }
 
@@ -226,7 +233,6 @@ public class ImageProcessor {
     }
 
     public void updateParam(int i) {
-
         switch (i) {
             case 1:
                 this.luma = !this.luma;
@@ -248,11 +254,15 @@ public class ImageProcessor {
     }
 
     public void updateFilterIndex() {
+        System.out.println(this.currentIndexFilter);
         switch (this.currentIndexFilter) {
             case 0:
                 this.luma = false;
                 this.gray = false;
                 this.invert = false;
+                this.convolute = false;
+                this.blur = false;
+                break;
             case 1:
                 this.luma = true;
                 this.gray = false;
@@ -266,11 +276,23 @@ public class ImageProcessor {
             case 3:
                 this.invert = true;
                 this.gray = false;
-                this.luma = false;
+                this.convolute = false;
+                break;
+            case 4:
+                this.invert = false;
+                this.convolute = true;
+                this.blur = false;
+                break;
+            case 5:
+                this.blur = true;
+                this.convolute = false;
+                break;
             default:
                 this.luma = false;
                 this.gray = false;
                 this.invert = false;
+                this.convolute = false;
+                this.blur = false;
         }
         process();
     }
@@ -281,7 +303,7 @@ public class ImageProcessor {
     }
 
     public void downFilter() {
-        this.currentIndexFilter = ((currentIndexFilter - 1) % numFilters);
+        this.currentIndexFilter = currentIndexFilter - 1 >= 0 ? (currentIndexFilter - 1) % numFilters : numFilters - 1;
         updateFilterIndex();
     }
 
