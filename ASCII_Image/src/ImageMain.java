@@ -87,7 +87,6 @@ public class ImageMain extends PApplet {
         text("ASCII", (int) (0.52*w), 0, (int)  (w*0.95), (int) (h*0.075));
 
 
-
         fill(0);
         noStroke();
         rectMode(CORNER);
