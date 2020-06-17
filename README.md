@@ -65,6 +65,3 @@ El proyecto cuenta con cuatro ejecutables, dos para el procesamiento de imágene
 ![image info](./imgResult/unknown.png)
 ### Desenfoque
 ![image info](./imgResult/unknown2.png)
-
-
-## Conlusiones
