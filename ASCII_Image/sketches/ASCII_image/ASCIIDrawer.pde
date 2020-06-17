@@ -32,44 +32,96 @@ class ASCIIDrawer {
     }
 
     public void orderChars(){
-        char[] char_list = new char[95];
-        for (int i = 32; i < 127; i++) {
+        char[] char_list = new char[81];
+        for (int i = 32; i < 32 + 81; i++) {
             char_list[i - 32] = (char)i;
         }
 
 
         count = new IntDict();
         loadPixels();
-        textAlign(CENTER, CENTER); textFont(mono); textSize((float)(res*0.65));
+        textAlign(CENTER, CENTER); textFont(mono); textSize((float)(res*0.75));
 
         background(0);
         noStroke();
 
         // Por cada pixel, evaluar su cantidad de pixeles en blanco respecto a los pixeles en negro. Representa su brillo.
         outerloop:
-        for(int j = 0; j<10; j++){
-            for(int i = 0; i<10; i++){
-                if(i + j*10 > char_list.length - 1) break outerloop;
+        for(int j = 0; j<9; j++){
+            for(int i = 0; i<9; i++){
+                if(i + j*9 > char_list.length - 1) break outerloop;
                 fill(255);
                 textAlign(CENTER, CENTER);
-                text(char_list[i + j*10]+"", i*res, j*res,res,res);
+                text(char_list[i + j*9]+"", i*res, j*res,res,res);
 
                 PImage area = get(i*res, j*res, res, res);
-                count.set(char_list[i + j*10]+"", 0);
+                
+                area.save("bmp.png");
+                count.set(char_list[i + j*9]+"", 0);
                 for(int y = 0; y< area.height; y++){
                     for(int x = 0; x<area.width; x++){
                         if(brightness(area.pixels[x+y*area.width]) > 0){
-                            count.increment(char_list[i + j*10]+"");
+                            count.increment(char_list[i + j*9]+"");
                         }
                     }
                 }
             }
         }
+       
+        
+        
         count.sortValues();
         for(String s : count.keyArray()){
             PApplet.println(s +":"+ count.get(s));
         }
         ordered  = count.keyArray();
+        
+        
+        //saveOrderedMatrix();
+    }
+    
+    
+    void saveOrderedMatrix(){      
+        push();
+        loadPixels();
+        textAlign(CENTER, CENTER); textFont(mono); textSize((float)(res*0.925));
+
+        background(0);
+        noStroke();
+        
+        int xres = (int) (0.8*res);
+        int yres = (int) (0.95*res);
+        
+        outerloop:
+        for(int j = 0; j<9; j++){
+            for(int i = 0; i<9; i++){
+                if(i + j*9 > ordered.length - 1) break outerloop;
+                fill(255);
+                textAlign(CENTER, CENTER);
+                text(ordered[i + j*9]+"", i*xres, j*yres,xres,yres);
+
+                PImage area = get(i*xres, j*yres, xres, yres);
+                
+                area.save("bmp.png");
+                count.set(ordered[i + j*9]+"", 0);
+                
+                for(int y = 0; y< area.height; y++){
+                    for(int x = 0; x<area.width; x++){
+                        if(brightness(area.pixels[x+y*area.width]) > 0){
+                            count.increment(ordered[i + j*9]+"");
+                        }
+                    }
+                }
+            }
+        }
+        
+        PImage area = get(0, 0, xres*9, yres*9);
+        area.save("matrix.tga");
+        area.save("matrix.png");
+      
+        pop();
+      
+      
     }
 
 
@@ -213,7 +265,7 @@ class ASCIIDrawer {
     public boolean getParam(int i) {
         switch (i) {
             case 1: return this.luma;
-            case 4: return this.col;
+            case 4: return this.col; 
             case 6: return this.bw;
             default:
                 throw new IllegalStateException("Unexpected value: " + i);

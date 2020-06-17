@@ -31,7 +31,6 @@ public class ImageMain extends PApplet {
 
     public void setup() {
 
-
         ancizar = createFont("AncizarSans-Regular_02042016.otf", 32);
 
         drawer = new ASCIIDrawer(this);

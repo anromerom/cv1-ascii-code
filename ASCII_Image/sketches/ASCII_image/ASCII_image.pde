@@ -128,13 +128,13 @@ public void drawButtons(){
     noStroke();
     fill(255, 70);
     switch (checkButton(mouseX, mouseY)) {
-        case 1 : rect(0.025f * w, 0.83f * h, w * 0.0625f, h * 0.0625f);
-        case 3 : rect(0.095f * w, 0.83f * h, w * 0.0625f, h * 0.0625f);
-        case 5 : rect(0.165f * w, 0.83f * h, w * 0.0625f, h * 0.0625f);
-        case 2 : rect(0.025f * w, 0.92f * h, w * 0.0625f, h * 0.0625f);
-        case 4 : rect(0.095f * w, 0.92f * h, w * 0.0625f, h * 0.0625f);
-        case 6 : rect(0.165f * w, 0.92f * h, w * 0.0625f, h * 0.0625f);
-        case 7 : image(download,w*0.5f, h* 0.65f, 0.04f*w,0.04f*w);
+        case 1 : rect(0.025f * w, 0.83f * h, w * 0.0625f, h * 0.0625f); break;
+        case 3 : rect(0.095f * w, 0.83f * h, w * 0.0625f, h * 0.0625f); break;
+        case 5 : rect(0.165f * w, 0.83f * h, w * 0.0625f, h * 0.0625f); break;
+        case 2 : rect(0.025f * w, 0.92f * h, w * 0.0625f, h * 0.0625f); break;
+        case 4 : rect(0.095f * w, 0.92f * h, w * 0.0625f, h * 0.0625f); break;
+        case 6 : rect(0.165f * w, 0.92f * h, w * 0.0625f, h * 0.0625f); break;
+        case 7 : image(download,w*0.5f, h* 0.65f, 0.04f*w,0.04f*w); break;
     }
 
     imageMode(CORNER);
