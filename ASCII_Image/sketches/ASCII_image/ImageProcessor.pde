@@ -257,6 +257,7 @@ class ImageProcessor {
         System.out.println(this.currentIndexFilter);
         switch (this.currentIndexFilter) {
             case 0:
+                title = "Original";
                 this.luma = false;
                 this.gray = false;
                 this.invert = false;
@@ -264,30 +265,36 @@ class ImageProcessor {
                 this.blur = false;
                 break;
             case 1:
+            title = "Luma";
                 this.luma = true;
                 this.gray = false;
                 this.invert = false;
                 break;
             case 2:
+            title = "Gray";
                 this.gray = true;
                 this.luma = false;
                 this.invert = false;
                 break;
             case 3:
+            title = "Invert";
                 this.invert = true;
                 this.gray = false;
                 this.convolute = false;
                 break;
             case 4:
+            title = "Edge detection";
                 this.invert = false;
                 this.convolute = true;
                 this.blur = false;
                 break;
             case 5:
+            title = "Blur";
                 this.blur = true;
                 this.convolute = false;
                 break;
             default:
+            title = "Original";
                 this.luma = false;
                 this.gray = false;
                 this.invert = false;

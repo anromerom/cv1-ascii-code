@@ -69,7 +69,7 @@ public void keyPressed(){
 
 }
 
-
+ static String title = "Original";
 
 public void draw() {
 
@@ -86,8 +86,8 @@ public void draw() {
     fill(255);
 
     rectMode(CORNERS);
-
-    text("Original", (int) (0.02*w), 0, (int)  (w*0.45), (int) (h*0.075));
+     
+    text(title, (int) (0.02*w), 0, (int)  (w*0.45), (int) (h*0.075));
     text("ASCII", (int) (0.52*w), 0, (int)  (w*0.95), (int) (h*0.075));
 
 
