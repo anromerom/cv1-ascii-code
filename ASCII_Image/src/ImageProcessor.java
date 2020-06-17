@@ -10,8 +10,13 @@ public class ImageProcessor {
     boolean convolute = false;
     boolean threshold = false;
     boolean invert = false;
+    boolean luma = false;
+    boolean gray = false;
+    boolean blur = false;
     int[] hist;
     PImage processed;
+    private int currentIndexFilter = 0;
+    private int numFilters = 6;
     private int w;
     private int h;
 
@@ -21,7 +26,7 @@ public class ImageProcessor {
     }
 
 
-    public void load (PImage img, int w, int h){
+    public void load(PImage img, int w, int h) {
         this.raw = img;
         constructHistogram();
         this.w = w;
@@ -30,29 +35,39 @@ public class ImageProcessor {
     }
 
 
-
-    public PImage getProcessed(){
+    public PImage getProcessed() {
         return processed;
     }
-    private void process(){
+
+    private void process() {
 
         //PImage filtered = adjusted(raw,w,h);
         PImage filtered = raw.copy();
-
-        if(threshold) {
+        if (luma) {
+            filtered = luma(filtered);
+        }
+        if (gray) {
+            filtered = grayByAverage(filtered);
+        }
+        if (threshold) {
             filtered.filter(p.THRESHOLD, (float) 0.75);
         }
 
-        if(invert) filtered.filter(p.INVERT);
-        if(convolute){
-            float[][] matrix = { {  -1, -1,  -1 },
-                                 { -1,  9, -1 },
-                                 {  -1, -1,  -1 } };
-            filtered = convolute(filtered,matrix);
+        if (invert) filtered = inverse(filtered);
+        if (convolute) {
+            float[][] matrix = {{-1, -1, -1},
+                    {-1, 8, -1},
+                    {-1, -1, -1}};
+            filtered = convolute(filtered, matrix);
+        }
+        if (blur) {
+            float[][] matrix = {{(1.0F / 3), (1.0F / 3), (1.0F / 3)},
+                    {(1.0F / 3), (1.0F / 3), (1.0F / 3)},
+                    {(1.0F / 3), (1.0F / 3), (1.0F / 3)}};
+            filtered = convolute(filtered, matrix);
         }
 
         filtered = adjusted(filtered, w, h);
-
 
 
         processed = adjusted(filtered, w, h);
@@ -60,32 +75,77 @@ public class ImageProcessor {
 
     }
 
-    private int mirror(int a, int N){
-        if(a < 0) return -a - 1;
-        else if(a > N - 1) return N + N - 1 - a;
+    private int mirror(int a, int N) {
+        if (a < 0) return -a - 1;
+        else if (a > N - 1) return N + N - 1 - a;
         else return a;
     }
 
+    PImage luma(PImage img) {
+        int w = img.width;
+        int h = img.height;
+        PImage new_img = p.createImage(w, h, p.RGB);
+        img.loadPixels();
+        int r, g, b;
+        for (int i = 0; i < img.width * img.height; i++) {
+            r = (int) p.red(img.pixels[i]);
+            g = (int) p.green(img.pixels[i]);
+            b = (int) p.blue(img.pixels[i]);
+            int val = (int) (0.2126 * r + 0.7152 * g + 0.0722 * b);
+            new_img.pixels[i] = p.color(val);
+        }
+        return new_img;
+    }
 
-    PImage convolute(PImage img, float[][] matrix){
+    PImage grayByAverage(PImage img) {
+        int w = img.width;
+        int h = img.height;
+        PImage new_img = p.createImage(w, h, p.RGB);
+        img.loadPixels();
+        int r, g, b;
+        for (int i = 0; i < img.width * img.height; i++) {
+            r = (int) p.red(img.pixels[i]);
+            g = (int) p.green(img.pixels[i]);
+            b = (int) p.blue(img.pixels[i]);
+            int val = (r + g + b) / 3;
+            new_img.pixels[i] = p.color(val);
+        }
+        return new_img;
+    }
 
+    PImage inverse(PImage img) {
+        int w = img.width;
+        int h = img.height;
+        PImage new_img = p.createImage(w, h, p.RGB);
+        img.loadPixels();
+        int r, g, b;
+        for (int i = 0; i < img.width * img.height; i++) {
+            r = 255 - (int) p.red(img.pixels[i]);
+            g = 255 - (int) p.green(img.pixels[i]);
+            b = 255 - (int) p.blue(img.pixels[i]);
+            new_img.pixels[i] = p.color(r, g, b);
+        }
+        return new_img;
+    }
+
+    PImage convolute(PImage img, float[][] matrix) {
 
 
         int w = img.width;
         int h = img.height;
-        PImage new_img = p.createImage(w,h, p.RGB);
+        PImage new_img = p.createImage(w, h, p.RGB);
         int kS = matrix.length;
         int k = (kS - 1) / 2;
 
 
-        for (int cx = 0; cx < w; cx ++){
-            for (int cy = 0; cy < h; cy ++){
+        for (int cx = 0; cx < w; cx++) {
+            for (int cy = 0; cy < h; cy++) {
 
                 int R = 0;
                 int G = 0;
                 int B = 0;
 
-                for( int j = -k; j<= k ; j++){
+                for (int j = -k; j <= k; j++) {
 
                     int sR = 0;
                     int sG = 0;
@@ -93,22 +153,22 @@ public class ImageProcessor {
 
                     int ny = mirror(cy + j, h);
 
-                    for( int i = -k; i<= k ; i++){
+                    for (int i = -k; i <= k; i++) {
                         int nx = mirror(cx + i, w);
                         //sR+= (uint8_t) *(img + channels*( nx + ny*w ));
-                        sR+= p.red(img.pixels[nx + ny*w]) * matrix[i + k ][j + k];
-                        sG+= p.green(img.pixels[nx + ny*w]) * matrix[i + k][j + k];
-                        sB+= p.blue(img.pixels[nx + ny*w]) * matrix[i + k][j + k];
+                        sR += p.red(img.pixels[nx + ny * w]) * matrix[i + k][j + k];
+                        sG += p.green(img.pixels[nx + ny * w]) * matrix[i + k][j + k];
+                        sB += p.blue(img.pixels[nx + ny * w]) * matrix[i + k][j + k];
 
                     }
-                    R+= sR;
-                    G+= sG;
-                    B+= sB;
+                    R += sR;
+                    G += sG;
+                    B += sB;
                 }
-                R/=kS;
-                G/=kS;
-                B/=kS;
-                new_img.pixels[cx +cy*w] = p.color(R,G,B);
+                R /= kS;
+                G /= kS;
+                B /= kS;
+                new_img.pixels[cx + cy * w] = p.color(R, G, B);
             }
         }
 
@@ -116,19 +176,14 @@ public class ImageProcessor {
     }
 
 
-
-
-    public PImage adjusted(PImage img, double w, double h){
+    public PImage adjusted(PImage img, double w, double h) {
 
         float sw, sh;
 
-        if ( (double) img.width / (double) img.height > w / h)
-        {
+        if ((double) img.width / (double) img.height > w / h) {
             sw = (float) w;
             sh = sw * img.height / img.width;
-        }
-        else
-        {
+        } else {
             sh = (float) h;
             sw = sh * img.width / img.height;
         }
@@ -140,16 +195,16 @@ public class ImageProcessor {
         pg.image(img, (float) w / 2, (float) h / 2, sw, sh);
         pg.endDraw();
 
-        return pg.get(0,0 ,(int) w,(int) h);
+        return pg.get(0, 0, (int) w, (int) h);
 
     }
 
 
-    public void constructHistogram(){
+    public void constructHistogram() {
         hist = new int[256];
         for (int i = 0; i < raw.width; i++) {
             for (int j = 0; j < raw.height; j++) {
-                int bright = (int)(p.brightness(raw.get(i, j)));
+                int bright = (int) (p.brightness(raw.get(i, j)));
                 hist[bright]++;
             }
         }
@@ -161,7 +216,6 @@ public class ImageProcessor {
         // Calculate the histogram
 
 
-        
         int histMax = PApplet.max(hist);
         p.rectMode(p.CORNERS);
         p.noStroke();
@@ -169,21 +223,29 @@ public class ImageProcessor {
         // Draw half of the histogram (skip every second value)
         for (int i = 0; i < raw.width; i += 2) {
             // Map i (from 0..img.width) to a location in the histogram (0..255)
-            int which = (int)(PApplet.map(i, 0, raw.width, 0, 255));
+            int which = (int) (PApplet.map(i, 0, raw.width, 0, 255));
             // Convert the histogram value to a location between
             // the bottom and the top of the picture
-            int y = (int)(PApplet.map(hist[which], 0,histMax, yo + h, yo));
+            int y = (int) (PApplet.map(hist[which], 0, histMax, yo + h, yo));
 
-            p.rect(xo + i* (w/ raw.width), yo + h, xo + (i+1) *( w/ raw.width), y);
+            p.rect(xo + i * (w / raw.width), yo + h, xo + (i + 1) * (w / raw.width), y);
         }
     }
 
     public void updateParam(int i) {
-
         switch (i) {
-            case 2: this.convolute = !this.convolute; break;
-            case 3: this.threshold = !this.threshold; break;
-            case 5: this.invert = !this.invert; break;
+            case 1:
+                this.luma = !this.luma;
+                break;
+            case 2:
+                this.convolute = !this.convolute;
+                break;
+            case 3:
+                this.threshold = !this.threshold;
+                break;
+            case 5:
+                this.invert = !this.invert;
+                break;
             default:
                 throw new IllegalStateException("Unexpected value: " + i);
         }
@@ -191,13 +253,70 @@ public class ImageProcessor {
 
     }
 
+    public void updateFilterIndex() {
+        System.out.println(this.currentIndexFilter);
+        switch (this.currentIndexFilter) {
+            case 0:
+                this.luma = false;
+                this.gray = false;
+                this.invert = false;
+                this.convolute = false;
+                this.blur = false;
+                break;
+            case 1:
+                this.luma = true;
+                this.gray = false;
+                this.invert = false;
+                break;
+            case 2:
+                this.gray = true;
+                this.luma = false;
+                this.invert = false;
+                break;
+            case 3:
+                this.invert = true;
+                this.gray = false;
+                this.convolute = false;
+                break;
+            case 4:
+                this.invert = false;
+                this.convolute = true;
+                this.blur = false;
+                break;
+            case 5:
+                this.blur = true;
+                this.convolute = false;
+                break;
+            default:
+                this.luma = false;
+                this.gray = false;
+                this.invert = false;
+                this.convolute = false;
+                this.blur = false;
+        }
+        process();
+    }
+
+    public void upFilter() {
+        this.currentIndexFilter = (this.currentIndexFilter + 1) % numFilters;
+        updateFilterIndex();
+    }
+
+    public void downFilter() {
+        this.currentIndexFilter = currentIndexFilter - 1 >= 0 ? (currentIndexFilter - 1) % numFilters : numFilters - 1;
+        updateFilterIndex();
+    }
+
     public boolean getParam(int i) {
 
 
         switch (i) {
-            case 2: return this.convolute;
-            case 3: return this.threshold;
-            case 5: return this.invert;
+            case 2:
+                return this.convolute;
+            case 3:
+                return this.threshold;
+            case 5:
+                return this.invert;
             default:
                 throw new IllegalStateException("Unexpected value: " + i);
         }
