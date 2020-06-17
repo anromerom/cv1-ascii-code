@@ -5,10 +5,10 @@ PShader defShader;
 PImage img;
 
 void setup() {
-  size(874, 337, P3D);
+  size(1044, 640, P3D);
   BWShader = loadShader("BWfrag.glsl", "vert.glsl");
   defShader = loadShader("normFrag.glsl");
-  img = loadImage("esponja.PNG");
+  img = loadImage("apple.jpg");
 }
 
 void draw() {
