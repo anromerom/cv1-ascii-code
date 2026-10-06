@@ -1,7 +1,16 @@
 # ASCII Art & Image Processing
 
-Image-processing workshop for **Visual Computing** at Universidad Nacional de Colombia (2020).
-It converts images and videos into ASCII art and applies classic filters, both on the CPU (Processing / Java) and on the GPU (GLSL shaders).
+Converts images and videos into ASCII art and applies classic filters, on the CPU (Processing / Java) and on the GPU (GLSL shaders).
+
+| | |
+|---|---|
+| **Course** | *Computación Visual* (Visual Computing), Universidad Nacional de Colombia |
+| **Term** | 2020-1 (Jun – Jul 2020), image-processing workshop |
+| **Team** | Nicolai Romero ([@anromerom](https://github.com/anromerom)) · Julián Rodríguez ([@jdrodriguezrui](https://github.com/jdrodriguezrui)) · Edder Hernández ([@Heldeg](https://github.com/Heldeg)) |
+| **Stack** | Processing 3/4, Java, GLSL, Processing Video library |
+| **Status** | Course deliverable, re-validated Oct 2026 |
+
+> **About the course:** an undergraduate course in the Systems and Computing Engineering program on image processing and real-time computer graphics: pixel operations, convolution, shaders (GLSL) and scene graphs, mostly with Processing and the course's [nub](https://github.com/VisualComputing/nub) library.
 
 ![App: original vs. ASCII with color](imgResult/app.png)
 
@@ -52,7 +61,7 @@ It converts images and videos into ASCII art and applies classic filters, both o
 | `ASCII_Image_Shader/{BW,Convolution,ASCII}` | GPU versions (GLSL) |
 | `ASCII_Image_Shader/ASCII2` | Unfinished glyph-atlas experiment |
 | `ASCII_Image/video sketch` | Early draft of the video app |
-| `ProyectoFinal/` | Early copy of the final project ([cv1-water_shader](https://github.com/anromerom/cv1-water_shader)) |
+| `ProyectoFinal/` | Early copy of the final project ([unal-vc-water-shaders](https://github.com/anromerom/unal-vc-water-shaders)) |
 
 </details>
 
@@ -83,16 +92,7 @@ Tested in Oct 2026 with **Processing 4.5.7** and the **Video library 2.2.2** (Ub
 - **The ASCII output is darker than it should be.** `nearest()` compares brightness (0–255) with raw lit-pixel counts (up to several hundred), so the densest characters are never chosen.
 - **`Convfrag.glsl` uses the wrong weight for one neighbour** (`co1*col2` should be `co2*col2`). Symmetric kernels hide this.
 - **Turning on Color and Background together gives colored text on white,** which is almost invisible.
-- **The repo carries old Windows GStreamer DLLs and duplicated videos** (~260 MB).
 
 </details>
-
-## Team
-
-| Member | GitHub |
-|---|---|
-| Nicolai Romero | [@anromerom](https://github.com/anromerom) |
-| Julián Rodríguez | [@jdrodriguezrui](https://github.com/jdrodriguezrui) |
-| Edder Hernández | [@Heldeg](https://github.com/Heldeg) |
 
 MIT License.
